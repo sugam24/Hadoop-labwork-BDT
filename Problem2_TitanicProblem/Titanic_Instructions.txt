@@ -1,0 +1,95 @@
+1. Switch your user to hduser
+
+
+2. Test Hadoop is running or not
+hadoop version
+
+
+3. Start dfs and yarn
+$ start-dfs.sh
+$ start-yarn.sh
+
+
+4. See the running services (notice all daemons are running or not including namenode and datanode)
+$ jps
+
+
+5. temporarily set hadoop class path
+export HADOOP_CLASSPATH=$(hadoop classpath)
+
+
+6. make sure if set or not (should return hadoop installed path)
+echo $HADOOP_CLASSPATH
+
+
+7. create directory on HDFS system
+hadoop fs -mkdir <dir_name>
+e.g. hadoop fs -mkdir /TitanicProblem
+
+
+8. create a directory inside it for the input
+hadoop fs -mkdir <HDFS_INPUT_DIR>
+hadoop fs -mkdir /TitanicProblem/Input
+
+
+9. check on localhost:50070
+
+
+10. make directory on your local system inside Desktop for hduser (or wherever you like)
+sudo mkdir /home/hduser/Desktop/TitanicProblem/input_data/
+*** given input file should be inside this directory ***
+
+
+11. give all permision to the base directory recusively
+sudo chmod 777 -R /home/hduser/Desktop/TitanicProblem
+
+
+12. Upload the given input file from your local system to hadoop system (inside the directory, you created at step 8)
+hadoop fs -put <INPUT_FILE_NAME> <HDFS_INPUT_DIRECTORY>
+e.g. hadoop fs -put '/home/hduser/Desktop/TitanicProblem/input_data/input.txt' /TitanicProblem/Input
+
+
+13. Check in http://192.168.146.131:50070/explorer.html#/TitanicProblem/Input
+
+
+14. Change the current directory to the Example directory
+cd <Example Directory>
+cd /home/hduser/Desktop/TitanicProblem
+
+
+15. Copy and paste the provided TitanicMeanAge.java example code
+Official url: https://hadoop.apache.org/docs/r2.9.2/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html
+
+e.g. file name for class TitanicMeanAge {} should be TitanicMeanAge.java
+
+Note: Java source code file should have the same name as the class name.
+Note: Source code has also been provided with this instruction file.
+
+
+16. Compile the Java Code
+javac -classpath ${HADOOP_CLASSPATH} -d <CLASS_FOLDER> <EXAMPLE_JAVA_FILE>
+e.g. javac -classpath ${HADOOP_CLASSPATH} -d '/home/hduser/Desktop/TitanicProblem/classfile' '/home/hduser/Desktop/TitanicProblem/TitanicMeanAge.java'
+
+
+17. Check the files in classfile directory
+
+
+18. Put the output files in one jar file
+jar -cvf <JAVR_FILE_NAME> -C <CLASS_FOLDER>
+e.g. jar -cvf titanicmeanage.jar -C classfile/ .
+
+
+19. Check tha .jar file created or not
+
+
+20. Now, Run the jar file on Hadoop
+hadoop jar <JAR_FILE> <CLASS_NAME> <HDFS_INPUT_DIRECTORY> <HDFS_OUTPUT_DIRECTORY>
+e.g. hadoop jar '/home/hduser/Desktop/TitanicProblem/titanicmeanage.jar' TitanicMeanAge /TitanicProblem/Input /TitanicProblem/Output
+
+
+21 see the Output
+hadoop dfs -cat <HDFS_OUTPUT_DIR>/*
+hadoop dfs -cat /TitanicProblem/Output/*
+
+to remove dir
+hadoop fs -rm -r /TitanicProblem/Output
